@@ -1,8 +1,30 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Assets/SphereTank.glb" type="PackedScene" id=1]
+[ext_resource path="res://Materials/MetalPlates001_2K_Color.jpg" type="Texture" id=2]
+[ext_resource path="res://Materials/MetalPlates001_2K_Metalness.jpg" type="Texture" id=3]
+[ext_resource path="res://Materials/MetalPlates001_2K_Normal.jpg" type="Texture" id=4]
+[ext_resource path="res://Materials/MetalPlates001_2K_Roughness.jpg" type="Texture" id=5]
+[ext_resource path="res://wheels.tres" type="Material" id=6]
 
 [sub_resource type="SpatialMaterial" id=1]
+albedo_texture = ExtResource( 2 )
+metallic = 1.0
+metallic_texture = ExtResource( 3 )
+roughness_texture = ExtResource( 5 )
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 4 )
+uv1_scale = Vector3( 2, 2, 2 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_texture = ExtResource( 2 )
+metallic = 1.0
+metallic_texture = ExtResource( 3 )
+roughness_texture = ExtResource( 5 )
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 4 )
 
 [node name="SphereTank" instance=ExtResource( 1 )]
 
@@ -14,3 +36,12 @@ visible = false
 
 [node name="Sphere" parent="." index="2"]
 material/0 = SubResource( 1 )
+
+[node name="Cylinder" parent="." index="3"]
+material/0 = SubResource( 2 )
+
+[node name="Cylinder001" parent="." index="4"]
+material/0 = ExtResource( 6 )
+
+[node name="Cylinder002" parent="." index="5"]
+material/0 = ExtResource( 6 )

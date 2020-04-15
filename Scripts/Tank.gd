@@ -8,29 +8,29 @@ extends KinematicBody
 var state = ""
 var speed = 1
 onready var Scan = $Scanner
+onready var L = $Scanner_l
+onready var R = $Scanner_r
+onready var Indicator = $Indicator
 var Bullet = preload("res://Scenes/EnemyBullet.tscn")
-var health = 100
+var health = 1000
 
 
 func take_damage(d):
 	health -= d
 	if health <= 0:
 		queue_free()
+		get_node("/root/Game/HUD/Win").visible = true
+		get_node("/root/Game/HUD/Time").visible = false
+		get_node("/root/Game/HUD/Timer").stop()
 
 func change_state(s):
 	state = s
-	print(state)
-	var material = $SphereTank/Sphere.mesh.surface_get_material(0)
-	if state == "scanning":
-		pass
-		#material.albedo_color = Color(0,1,0)
+	if state == "searching":
+		Indicator.light_color = Color(0,1,0)
 	if state == "found":
-		pass
-		#material.albedo_color = Color(1,1,0)
+		Indicator.light_color = Color(1,1,0)
 	if state == "shooting":
-		pass
-		#material.albedo_color = Color(1,0,0)
-	#$sphere_tank/Sphere.set_surface_material(0, material)
+		Indicator.light_color = Color(1,0,0)
 
 
 func _ready():
@@ -42,6 +42,13 @@ func _physics_process(delta):
 		var c = Scan.get_collider()
 		if c != null and c.name == 'Player':
 			change_state("found")
+	else:
+		var l = L.get_collider()
+		if l != null and l.name == 'Player':
+			speed = 1
+		var r = R.get_collider()
+		if r != null and r.name == 'Player':
+			speed = -1
 	if state == "found":
 		change_state("waiting")
 		$Timer.start()
@@ -54,7 +61,6 @@ func _physics_process(delta):
 
 
 func _on_Timer_timeout():
-	print("timeout")
 	var c = Scan.get_collider()
 	if c != null and c.name == 'Player':
 		if state == "waiting":

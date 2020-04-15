@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Bullet.tscn" type="PackedScene" id=2]
@@ -8,14 +8,37 @@
 [ext_resource path="res://Scenes/cliffGrey_top.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scenes/crate.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Scenes/key.tscn" type="PackedScene" id=8]
-[ext_resource path="res://Scenes/tree_pineSmall_square2.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scenes/SphereTank.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scripts/Tank.gd" type="Script" id=11]
 [ext_resource path="res://Scenes/EnemyBullet.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scripts/Enemy Bullets.gd" type="Script" id=13]
+[ext_resource path="res://Materials/Ground030_2K_AmbientOcclusion.jpg" type="Texture" id=14]
+[ext_resource path="res://Materials/Ground030_2K_Roughness.jpg" type="Texture" id=15]
+[ext_resource path="res://Materials/Ground030_2K_Normal.jpg" type="Texture" id=16]
+[ext_resource path="res://Materials/Ground030_2K_Displacement.jpg" type="Texture" id=17]
+[ext_resource path="res://Scripts/HUD.gd" type="Script" id=18]
+[ext_resource path="res://Scripts/Key.gd" type="Script" id=19]
+[ext_resource path="res://Scripts/Crate.gd" type="Script" id=20]
+[ext_resource path="res://Scripts/Instructions.gd" type="Script" id=21]
+[ext_resource path="res://Scripts/Terrain.gd" type="Script" id=22]
 
 [sub_resource type="PlaneMesh" id=1]
 size = Vector2( 200, 200 )
+
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 0.407843, 0.486275, 0.372549, 1 )
+albedo_texture = ExtResource( 14 )
+roughness_texture = ExtResource( 15 )
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 16 )
+depth_enabled = true
+depth_scale = 0.05
+depth_deep_parallax = false
+depth_flip_tangent = false
+depth_flip_binormal = false
+depth_texture = ExtResource( 17 )
+uv1_scale = Vector3( 15, 15, 15 )
 
 [sub_resource type="ConcavePolygonShape" id=2]
 data = PoolVector3Array( 15, 0, 15, -15, 0, 15, 15, 0, -15, -15, 0, 15, -15, 0, -15, 15, 0, -15 )
@@ -43,7 +66,7 @@ script = ExtResource( 4 )
 [node name="Ground" type="MeshInstance" parent="Ground"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0785439, -0.090843, -0.903987 )
 mesh = SubResource( 1 )
-material/0 = null
+material/0 = SubResource( 8 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Ground"]
 shape = SubResource( 2 )
@@ -77,8 +100,16 @@ transform = Transform( -8, 0, 2.60673e-06, 0, 8, 0, -2.60673e-06, 0, -8, 0.2, 1.
 [node name="Bullets" type="Spatial" parent="."]
 
 [node name="HUD" type="Node2D" parent="."]
+script = ExtResource( 18 )
 
-[node name="ColorRect" type="ColorRect" parent="HUD"]
+[node name="Time" type="Control" parent="HUD"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BG" type="ColorRect" parent="HUD/Time"]
 margin_right = 82.0
 margin_bottom = 22.0
 color = Color( 0.176471, 0.168627, 0.168627, 0.521569 )
@@ -86,22 +117,127 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Score" type="Label" parent="HUD"]
+[node name="Time" type="Label" parent="HUD/Time"]
 margin_left = 9.0
 margin_top = 4.0
-margin_right = 49.0
+margin_right = 52.0
 margin_bottom = 18.0
-text = "Score: "
+text = "Time:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Key" type="Label" parent="HUD/Time"]
+margin_left = 97.0
+margin_top = 5.0
+margin_right = 137.0
+margin_bottom = 19.0
+text = "Key"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Crate" type="Label" parent="HUD/Time"]
+margin_left = 148.0
+margin_top = 5.0
+margin_right = 188.0
+margin_bottom = 19.0
+text = "Crate"
+
+[node name="Timer" type="Timer" parent="HUD"]
+
+[node name="Lose" type="Control" parent="HUD"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="HUD/Lose"]
+margin_right = 1026.0
+margin_bottom = 599.0
+color = Color( 0.27451, 0.027451, 0.027451, 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/Lose"]
+margin_left = 478.161
+margin_top = 250.744
+margin_right = 518.161
+margin_bottom = 290.744
+
+[node name="Label" type="Label" parent="HUD/Lose/HBoxContainer"]
+margin_top = 4.0
+margin_right = 112.0
+margin_bottom = 35.0
+text = "Time has run out!
+You lose."
+align = 1
+
+[node name="Win" type="Control" parent="HUD"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="HUD/Win"]
+margin_right = 1026.0
+margin_bottom = 599.0
+color = Color( 0.0588235, 0.337255, 0.0705882, 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/Win"]
+margin_left = 478.161
+margin_top = 250.744
+margin_right = 518.161
+margin_bottom = 290.744
+
+[node name="Label" type="Label" parent="HUD/Win/HBoxContainer"]
+margin_top = 13.0
+margin_right = 121.0
+margin_bottom = 27.0
+text = "You did it, you win!"
+align = 1
+
+[node name="Instructions" type="Control" parent="HUD"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 21 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="HUD/Instructions"]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/Instructions"]
+margin_left = 393.0
+margin_top = 245.0
+margin_right = 606.0
+margin_bottom = 349.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HUD/Instructions/HBoxContainer"]
+margin_top = 2.0
+margin_right = 173.0
+margin_bottom = 101.0
+text = "Your Mission:
+1. Collect Key
+2. Collect Crate
+3. Shoot the tank
+
+Hurry! Or time will run out."
+align = 1
+
 [node name="Global" parent="." instance=ExtResource( 5 )]
 
 [node name="Terrain" type="Spatial" parent="."]
-
-[node name="tree_pineSmall_square3" parent="Terrain" instance=ExtResource( 9 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 10 )
+script = ExtResource( 22 )
 
 [node name="Cliffs" type="Spatial" parent="."]
 
@@ -117,9 +253,46 @@ transform = Transform( 50, 0, 0, 0, 30, 0, 0, 0, 30, 50, 0, -100.8 )
 [node name="cliffGrey_top5" parent="Cliffs" instance=ExtResource( 6 )]
 transform = Transform( 50, 0, 0, 0, 30, 0, 0, 0, 30, 100, 0, -100.8 )
 
+[node name="cliffGrey_top7" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( 5.96244e-07, 0, -30, 0, 30, 0, 50, 0, 3.57746e-07, 100, 0, -50 )
+
+[node name="cliffGrey_top8" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( 5.96244e-07, 0, -30, 0, 30, 0, 50, 0, 3.57746e-07, 100, 0, 0 )
+
+[node name="cliffGrey_top9" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( 5.96244e-07, 0, -30, 0, 30, 0, 50, 0, 3.57746e-07, 100, 0, 50 )
+
+[node name="cliffGrey_top10" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( 5.96244e-07, 0, -30, 0, 30, 0, 50, 0, 3.57746e-07, 100, 0, 100 )
+
+[node name="cliffGrey_top11" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -50, 0, -9.77524e-06, 0, 30, 0, 1.62921e-05, 0, -30, 50, 0, 100 )
+
+[node name="cliffGrey_top12" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -50, 0, -9.77524e-06, 0, 30, 0, 1.62921e-05, 0, -30, 0, 0, 100 )
+
+[node name="cliffGrey_top13" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -50, 0, -9.77524e-06, 0, 30, 0, 1.62921e-05, 0, -30, -50, 0, 100 )
+
+[node name="cliffGrey_top14" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -50, 0, -9.77524e-06, 0, 30, 0, 1.62921e-05, 0, -30, -100, 0, 100 )
+
+[node name="cliffGrey_top15" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -8.14603e-06, 0, 30, 0, 30, 0, -50, 0, -4.88762e-06, -100, 0, 50 )
+
+[node name="cliffGrey_top16" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -8.14603e-06, 0, 30, 0, 30, 0, -50, 0, -4.88762e-06, -100, 0, 0 )
+
+[node name="cliffGrey_top17" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -8.14603e-06, 0, 30, 0, 30, 0, -50, 0, -4.88762e-06, -100, 0, -50 )
+
+[node name="cliffGrey_top18" parent="Cliffs" instance=ExtResource( 6 )]
+transform = Transform( -8.14603e-06, 0, 30, 0, 30, 0, -50, 0, -4.88762e-06, -100, 0, -100 )
+
 [node name="Items" type="Spatial" parent="."]
 
 [node name="Crate" type="RigidBody" parent="Items"]
+script = ExtResource( 20 )
 
 [node name="crate" parent="Items/Crate" instance=ExtResource( 7 )]
 transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
@@ -130,6 +303,7 @@ shape = SubResource( 5 )
 
 [node name="Key" type="RigidBody" parent="Items"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, -5 )
+script = ExtResource( 19 )
 
 [node name="key" parent="Items/Key" instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0.5 )
@@ -146,13 +320,24 @@ shape = SubResource( 6 )
 script = ExtResource( 11 )
 
 [node name="SphereTank" parent="Enemies/Tank" instance=ExtResource( 10 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 2, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.71197, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Enemies/Tank"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 2, 0 )
 shape = SubResource( 7 )
 
 [node name="Scanner" type="RayCast" parent="Enemies/Tank"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.004, 1.72181, 0 )
+enabled = true
+cast_to = Vector3( 30, 0, 0 )
+
+[node name="Scanner_l" type="RayCast" parent="Enemies/Tank"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.004, 1.72181, -0.720788 )
+enabled = true
+cast_to = Vector3( 30, 0, 0 )
+
+[node name="Scanner_r" type="RayCast" parent="Enemies/Tank"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.004, 1.72181, 0.631897 )
 enabled = true
 cast_to = Vector3( 30, 0, 0 )
 
@@ -162,6 +347,8 @@ one_shot = true
 [node name="Muzzle" type="Position3D" parent="Enemies/Tank"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2527, 1.9531, -0.013003 )
 
+[node name="Indicator" type="OmniLight" parent="Enemies/Tank"]
+
 [node name="Enemy Bullets" type="Spatial" parent="."]
 script = ExtResource( 13 )
 
@@ -169,4 +356,6 @@ script = ExtResource( 13 )
 
 [node name="Timer" type="Timer" parent="Enemy Bullets"]
 one_shot = true
+[connection signal="timeout" from="HUD/Timer" to="HUD" method="_on_Timer_timeout"]
+[connection signal="timeout" from="HUD/Instructions/Timer" to="HUD/Instructions" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Enemies/Tank/Timer" to="Enemies/Tank" method="_on_Timer_timeout"]
