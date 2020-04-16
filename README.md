@@ -1,2 +1,3 @@
-# Project-Template-Godot
-A default Godot project template for MSCH-C220
+# 09-FPS
+
+My first 3D first person shooter made in Godot for my C220 class at Indiana University Bloomington.
