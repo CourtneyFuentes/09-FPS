@@ -10,7 +10,7 @@ onready var Enemy = get_node("/root/Game/Enemies/Tank")
 func _ready():
 	for x in range(-100,100):
 		for z in range(-100,100):
-			if x % 2 == 0 and z % 2 == 0 and randf() < 0.3:
+			if x % 2 == 0 and z % 2 == 0 and randf() < 0.05:
 				var display = true
 				if (x < Player.translation.x + 1 and x > Player.translation.x-1) and (z < Player.translation.z + 1 and z > Player.translation.z -1):
 					display = false
@@ -25,6 +25,6 @@ func _ready():
 					t.translation = Vector3(x, 0, z)
 					var r = randf()*6.28
 					t.rotate_y(r)
-					var s = 2 + randf()
+					var s = 3 + randf()
 					t.scale = Vector3(s,s,s)
 					Terrain.add_child(t)

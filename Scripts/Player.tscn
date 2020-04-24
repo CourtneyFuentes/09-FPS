@@ -1,7 +1,6 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/Bullet.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/shotgunShort.obj" type="PackedScene" id=3]
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=4]
 [ext_resource path="res://Scenes/Global.tscn" type="PackedScene" id=5]
@@ -11,7 +10,6 @@
 [ext_resource path="res://Materials/kloppenheim_02_1k.hdr" type="Texture" id=9]
 [ext_resource path="res://Scenes/SphereTank.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scripts/Tank.gd" type="Script" id=11]
-[ext_resource path="res://Scenes/EnemyBullet.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scripts/Enemy Bullets.gd" type="Script" id=13]
 [ext_resource path="res://Materials/Ground030_2K_AmbientOcclusion.jpg" type="Texture" id=14]
 [ext_resource path="res://Materials/Ground030_2K_Roughness.jpg" type="Texture" id=15]
@@ -50,8 +48,8 @@ depth_flip_binormal = false
 depth_texture = ExtResource( 17 )
 uv1_scale = Vector3( 15, 15, 15 )
 
-[sub_resource type="ConcavePolygonShape" id=5]
-data = PoolVector3Array( 15, 0, 15, -15, 0, 15, 15, 0, -15, -15, 0, 15, -15, 0, -15, 15, 0, -15 )
+[sub_resource type="ConvexPolygonShape" id=11]
+points = PoolVector3Array( -100.546, 0.546448, -100.546, -100.546, 0.546448, 100.546, 100.546, 0.546448, -100.546, 100.546, 0.546448, 100.546 )
 
 [sub_resource type="CapsuleShape" id=6]
 radius = 0.5
@@ -82,9 +80,11 @@ mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Ground"]
-shape = SubResource( 5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0785439, -0.090843, -0.903987 )
+shape = SubResource( 11 )
 
 [node name="Player" type="KinematicBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0 )
 script = ExtResource( 1 )
 
 [node name="Body" type="CollisionShape" parent="Player"]
@@ -107,8 +107,6 @@ transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0.2, 1.
 
 [node name="Shotgun" parent="Player/Pivot" instance=ExtResource( 3 )]
 transform = Transform( -8, 0, 2.60673e-06, 0, 8, 0, -2.60673e-06, 0, -8, 0.2, 1.3, -0.4 )
-
-[node name="Bullet" parent="." instance=ExtResource( 2 )]
 
 [node name="Bullets" type="Spatial" parent="."]
 
@@ -358,17 +356,16 @@ cast_to = Vector3( 30, 0, 0 )
 one_shot = true
 
 [node name="Muzzle" type="Position3D" parent="Enemies/Tank"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2527, 1.9531, -0.013003 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.21, 1.70126, -0.013003 )
 
 [node name="Indicator" type="OmniLight" parent="Enemies/Tank"]
 
 [node name="Enemy Bullets" type="Spatial" parent="."]
 script = ExtResource( 13 )
 
-[node name="EnemyBullet" parent="Enemy Bullets" instance=ExtResource( 12 )]
-
 [node name="Timer" type="Timer" parent="Enemy Bullets"]
 one_shot = true
 [connection signal="timeout" from="HUD/Timer" to="HUD" method="_on_Timer_timeout"]
 [connection signal="timeout" from="HUD/Instructions/Timer" to="HUD/Instructions" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Enemies/Tank/Timer" to="Enemies/Tank" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Enemy Bullets/Timer" to="Enemy Bullets" method="_on_Timer_timeout"]
