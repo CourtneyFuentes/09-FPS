@@ -77,7 +77,5 @@ func _unhandled_input(event):
 	if event.is_action_pressed("shoot") and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		var b = Bullet.instance()
 		b.start($Pivot/Muzzle.global_transform)
-		Flash.emitting = true
-		Smoke.emitting = true
 		get_node("/root/Game/Bullets").add_child(b)
 		

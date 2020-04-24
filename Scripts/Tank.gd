@@ -42,20 +42,20 @@ func _physics_process(delta):
 		var c = Scan.get_collider()
 		if c != null and c.name == 'Player':
 			change_state("found")
-	else:
-		var l = L.get_collider()
-		if l != null and l.name == 'Player':
-			speed = 1
-		var r = R.get_collider()
-		if r != null and r.name == 'Player':
-			speed = -1
+		else:
+			var l = L.get_collider()
+			if l != null and l.name == 'Player':
+				speed = 1
+			var r = R.get_collider()
+			if r != null and r.name == 'Player':
+				speed = -1
 	if state == "found":
 		change_state("waiting")
 		$Timer.start()
 	if state == "shooting":
 		var b = Bullet.instance()
 		b.start($Muzzle.global_transform)
-		get_node("/root/Game/EnemyBullets").fire(b)
+		get_node("/root/Game/Enemy Bullets").fire(b)
 		$Timer.start()
 		change_state("shoot_waiting")
 
